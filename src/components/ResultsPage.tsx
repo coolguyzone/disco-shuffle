@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Shuffle, RotateCcw, Filter } from 'lucide-react';
-import { FilteredRelease, QueueSize, FORMATS, Format } from '../types/discogs';
+import { FilteredRelease, QueueSize, FORMATS, Format, GENRES, Genre } from '../types/discogs';
 import { AlbumCard } from './AlbumCard';
 
 interface ResultsPageProps {
@@ -8,14 +8,16 @@ interface ResultsPageProps {
   queueSize: QueueSize;
   username: string;
   currentFormats: Format[];
+  currentGenres: Genre[];
   onBack: () => void;
   onReshuffle: () => void;
-  onFilterUpdate: (formats: Format[], queueSize: QueueSize) => void;
+  onFilterUpdate: (formats: Format[], genres: Genre[], queueSize: QueueSize) => void;
 }
 
-export function ResultsPage({ results, queueSize, username, currentFormats, onBack, onReshuffle, onFilterUpdate }: ResultsPageProps) {
+export function ResultsPage({ results, queueSize, username, currentFormats, currentGenres, onBack, onReshuffle, onFilterUpdate }: ResultsPageProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedFormats, setSelectedFormats] = useState<Format[]>(currentFormats);
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>(currentGenres);
   const [selectedQueueSize, setSelectedQueueSize] = useState<QueueSize>(queueSize);
   const isSingleMode = selectedQueueSize === 1;
 
@@ -23,7 +25,8 @@ export function ResultsPage({ results, queueSize, username, currentFormats, onBa
   useEffect(() => {
     setSelectedQueueSize(queueSize);
     setSelectedFormats(currentFormats);
-  }, [queueSize, currentFormats]);
+    setSelectedGenres(currentGenres);
+  }, [queueSize, currentFormats, currentGenres]);
 
   const toggleFormat = (format: Format) => {
     setSelectedFormats(prev => 
@@ -33,8 +36,16 @@ export function ResultsPage({ results, queueSize, username, currentFormats, onBa
     );
   };
 
+  const toggleGenre = (genre: Genre) => {
+    setSelectedGenres(prev => 
+      prev.includes(genre) 
+        ? prev.filter(g => g !== genre)
+        : [...prev, genre]
+    );
+  };
+
   const handleApplyFilters = () => {
-    onFilterUpdate(selectedFormats, selectedQueueSize);
+    onFilterUpdate(selectedFormats, selectedGenres, selectedQueueSize);
     setShowFilters(false);
   };
 
@@ -123,26 +134,55 @@ export function ResultsPage({ results, queueSize, username, currentFormats, onBa
                 )}
               </div>
 
-              {/* Queue Size Selection */}
+              {/* Genre Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Number of Albums
+                  Genre Filter
                 </label>
-                <div className="space-y-2">
-                  {queueOptions.map(option => (
-                    <label key={option.value} className="flex items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                  {GENRES.map(genre => (
+                    <label key={genre} className="flex items-center min-w-0">
                       <input
-                        type="radio"
-                        name="queueSize"
-                        value={option.value}
-                        checked={selectedQueueSize === option.value}
-                        onChange={() => setSelectedQueueSize(option.value)}
-                        className="border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
+                        type="checkbox"
+                        checked={selectedGenres.includes(genre)}
+                        onChange={() => toggleGenre(genre)}
+                        className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 mr-2 flex-shrink-0"
                       />
-                      <span className="text-sm text-gray-700">{option.label}</span>
+                      <span className="text-sm text-gray-700 truncate">{genre}</span>
                     </label>
                   ))}
                 </div>
+                {selectedGenres.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedGenres([])}
+                    className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                  >
+                    Clear all genres
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Queue Size Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Number of Results
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {queueOptions.map(option => (
+                  <label key={option.value} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="queueSize"
+                      value={option.value}
+                      checked={selectedQueueSize === option.value}
+                      onChange={() => setSelectedQueueSize(option.value)}
+                      className="border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
+                    />
+                    <span className="text-sm text-gray-700">{option.label}</span>
+                  </label>
+                ))}
               </div>
             </div>
 

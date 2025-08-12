@@ -6,9 +6,10 @@ A React application that fetches and shuffles albums from your Discogs collectio
 
 - **Fetch Your Collection**: Connect to any public Discogs user's collection
 - **Smart Format Filtering**: Filter by LP, EP, Cassette, or CD formats
+- **Genre Filtering**: Filter by 16 official Discogs genres including Rock, Electronic, Jazz, and more
 - **7" Vinyl Support**: 7" records are automatically categorized as EPs
 - **Flexible Queue Sizes**: Get 1, 10, 25, 50, or all albums
-- **Real-time Filter Updates**: Modify filters without making new API calls
+- **Real-time Filter Updates**: Modify formats and genres without making new API calls
 - **Beautiful UI**: Modern, responsive design with Tailwind CSS
 
 ## 🚀 Live Demo
@@ -91,9 +92,66 @@ Make sure your repository has:
 
 1. **Enter a Discogs username** (must be public)
 2. **Select format filters** (LP, EP, Cassette, CD)
-3. **Choose queue size** (1 to all albums)
-4. **Fetch and shuffle** your collection
-5. **Update filters** on the results page without new API calls
+3. **Choose genre filters** (Rock, Electronic, Jazz, Hip Hop, and 30+ more)
+4. **Set queue size** (1 to all albums)
+5. **Fetch and shuffle** your collection
+6. **Update filters** on the results page without new API calls
+
+## 🎵 Genre Filtering
+
+The app includes genre filtering based on **official Discogs database guidelines** with the exact 16 genre categories used by Discogs:
+
+### **Core Genres**
+- **Rock** - All rock music including Metal, Punk, Alternative, Indie, Grunge, Hardcore
+- **Electronic** - Electronic music including Dance, House, Techno, Ambient, Disco, Drum & Bass, Dubstep, Experimental
+- **Pop** - Popular music including Indie Pop, Bedroom Pop
+- **Hip-Hop** - Hip-hop and rap music including Trap
+- **Jazz** - Jazz music including Bebop, Free Jazz, Smooth Jazz, Fusion
+
+### **Specialized Genres**
+- **Funk / Soul** - Funk and soul music including R&B, Gospel, Neo Soul, Northern Soul
+- **Folk, World, & Country** - Folk, world music, and country including Celtic, African, Asian, Middle Eastern, Flamenco
+- **Classical** - Classical music including Orchestral, Chamber Music, Opera, Symphony
+- **Blues** - Blues music including Blues Rock
+- **Reggae** - Reggae music including Ska
+
+### **Unique Categories**
+- **Latin** - Latin music including Salsa, Merengue, Bachata, Cumbia, Tango
+- **Stage & Screen** - Soundtracks, film scores, video game music, television music, musicals
+- **Brass & Military** - Brass band and military music
+- **Children's** - Children's music
+- **Non-Music** - Spoken word, comedy, audio books, etc.
+
+### **Smart Genre Mapping**
+The app automatically maps Discogs genre variations to standardized categories:
+- "edm" → Electronic
+- "rap" → Hip-Hop
+- "metal" → Rock
+- "punk" → Rock
+- "folk" → Folk, World, & Country
+- "world" → Folk, World, & Country
+- "country" → Folk, World, & Country
+- "funk" → Funk / Soul
+- "soul" → Funk / Soul
+- "r&b" → Funk / Soul
+- "soundtrack" → Stage & Screen
+- "score" → Stage & Screen
+- "blues rock" → Blues
+- "ska" → Reggae
+
+### **Genre Display**
+- Genre badges appear on album cards alongside format information
+- Purple genre badges on the left, white format badges on the right
+- Genres are extracted from Discogs API data and normalized for consistency
+- Based on official Discogs database guidelines for accurate categorization
+- Uses the exact 16 genre categories that Discogs actually uses
+
+## 📱 Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
 ## 🔧 Technical Stack
 
@@ -138,13 +196,6 @@ This app includes comprehensive error monitoring and performance tracking:
 3. Copy your DSN from project settings
 4. Add to `.env.local`: `VITE_SENTRY_DSN=your-dsn-here`
 5. Deploy and monitor your app's health!
-
-## �� Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
 
 ## 🤝 Contributing
 

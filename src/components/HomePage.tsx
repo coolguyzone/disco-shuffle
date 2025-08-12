@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { Disc3, Shuffle, Filter } from 'lucide-react';
-import { FORMATS, Format, QueueSize } from '../types/discogs';
+import { FORMATS, Format, QueueSize, GENRES, Genre } from '../types/discogs';
 
 interface HomePageProps {
-  onFetchLibrary: (username: string, formats: Format[], queueSize: QueueSize) => void;
+  onFetchLibrary: (username: string, formats: Format[], genres: Genre[], queueSize: QueueSize) => void;
   loading: boolean;
 }
 
 export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
   const [username, setUsername] = useState('');
   const [selectedFormats, setSelectedFormats] = useState<Format[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
   const [queueSize, setQueueSize] = useState<QueueSize>(1);
   const [showFilters, setShowFilters] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim()) {
-      onFetchLibrary(username.trim(), selectedFormats, queueSize);
+      onFetchLibrary(username.trim(), selectedFormats, selectedGenres, queueSize);
     }
   };
 
@@ -25,6 +26,14 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
       prev.includes(format) 
         ? prev.filter(f => f !== format)
         : [...prev, format]
+    );
+  };
+
+  const toggleGenre = (genre: Genre) => {
+    setSelectedGenres(prev => 
+      prev.includes(genre) 
+        ? prev.filter(g => g !== genre)
+        : [...prev, genre]
     );
   };
 
@@ -75,44 +84,30 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Queue Size
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Filters
                   </label>
-                  <select
-                    value={queueSize}
-                    onChange={(e) => setQueueSize(e.target.value as QueueSize)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                  <button
+                    type="button"
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center text-sm text-purple-600 hover:text-purple-700 transition-colors"
                     disabled={loading}
                   >
-                    {queueOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    <Filter className="w-4 h-4 mr-1" />
+                    {selectedFormats.length > 0 || selectedGenres.length > 0 
+                      ? `${selectedFormats.length + selectedGenres.length} selected` 
+                      : 'All filters'}
+                  </button>
                 </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      Format Filter
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setShowFilters(!showFilters)}
-                      className="flex items-center text-sm text-purple-600 hover:text-purple-700 transition-colors"
-                      disabled={loading}
-                    >
-                      <Filter className="w-4 h-4 mr-1" />
-                      {selectedFormats.length > 0 ? `${selectedFormats.length} selected` : 'All formats'}
-                    </button>
-                  </div>
-                  
-                  {showFilters && (
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                      <div className="grid grid-cols-4 gap-2">
+                
+                {showFilters && (
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                    {/* Format Filters */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Format</h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {FORMATS.map(format => (
                           <label key={format} className="flex items-center">
                             <input
@@ -130,15 +125,82 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
                         <button
                           type="button"
                           onClick={() => setSelectedFormats([])}
-                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
                           disabled={loading}
                         >
-                          Clear all
+                          Clear formats
                         </button>
                       )}
                     </div>
-                  )}
-                </div>
+
+                    {/* Genre Filters */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Genre</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 max-h-48 overflow-y-auto">
+                        {GENRES.map(genre => (
+                          <label key={genre} className="flex items-center min-w-0">
+                            <input
+                              type="checkbox"
+                              checked={selectedGenres.includes(genre)}
+                              onChange={() => toggleGenre(genre)}
+                              className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 mr-2 flex-shrink-0"
+                              disabled={loading}
+                            />
+                            <span className="text-sm text-gray-700 truncate">{genre}</span>
+                          </label>
+                        ))}
+                      </div>
+                      {selectedGenres.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedGenres([])}
+                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                          disabled={loading}
+                        >
+                          Clear genres
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Queue Size Selection */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Number of Results</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {queueOptions.map(option => (
+                          <label key={option.value} className="flex items-center">
+                            <input
+                              type="radio"
+                              name="queueSize"
+                              value={option.value}
+                              checked={queueSize === option.value}
+                              onChange={(e) => setQueueSize(e.target.value as QueueSize)}
+                              className="border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
+                              disabled={loading}
+                            />
+                            <span className="text-sm text-gray-700">{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Clear All Button */}
+                    {(selectedFormats.length > 0 || selectedGenres.length > 0) && (
+                      <div className="pt-2 border-t border-gray-200">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedFormats([]);
+                            setSelectedGenres([]);
+                          }}
+                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                          disabled={loading}
+                        >
+                          Clear all filters
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <button

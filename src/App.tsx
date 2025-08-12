@@ -5,7 +5,7 @@ import { LoadingSpinner } from './components/LoadingSpinner';
 import { ErrorMessage } from './components/ErrorMessage';
 import { discogsApi } from './services/discogsApi';
 import { filterReleases, getRandomAlbums } from './utils/shuffle';
-import { DiscogsRelease, FilteredRelease, Format, QueueSize } from './types/discogs';
+import { DiscogsRelease, FilteredRelease, Format, QueueSize, Genre } from './types/discogs';
 import { Sentry, setUserContext, captureCustomEvent, captureDiscogsError } from './sentry';
 
 type ViewState = 'home' | 'loading' | 'results' | 'error';
@@ -16,15 +16,17 @@ function App() {
   const [filteredResults, setFilteredResults] = useState<FilteredRelease[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [currentFormats, setCurrentFormats] = useState<Format[]>([]);
+  const [currentGenres, setCurrentGenres] = useState<Genre[]>([]);
   const [currentQueueSize, setCurrentQueueSize] = useState<QueueSize>(1);
   const [error, setError] = useState('');
   const [fetchProgress, setFetchProgress] = useState({ current: 0, total: 0 });
 
-  const handleFetchLibrary = async (username: string, formats: Format[], queueSize: QueueSize) => {
+  const handleFetchLibrary = async (username: string, formats: Format[], genres: Genre[], queueSize: QueueSize) => {
     setView('loading');
     setError('');
     setCurrentUsername(username);
     setCurrentFormats(formats);
+    setCurrentGenres(genres);
     setCurrentQueueSize(queueSize);
     setFetchProgress({ current: 0, total: 0 });
 
@@ -33,6 +35,7 @@ function App() {
     captureCustomEvent('library_fetch_started', {
       username,
       formats: formats.join(','),
+      genres: genres.join(','),
       queueSize,
     });
 
@@ -49,11 +52,12 @@ function App() {
         username,
         totalReleases: releases.length,
         formats: formats.join(','),
+        genres: genres.join(','),
         queueSize,
       });
       
       // Apply filters and randomization
-      const filtered = filterReleases(releases, formats);
+      const filtered = filterReleases(releases, formats, genres);
       const randomized = getRandomAlbums(filtered, queueSize);
       
       setFilteredResults(randomized);
@@ -65,6 +69,7 @@ function App() {
       captureDiscogsError(error, {
         username,
         formats: formats.join(','),
+        genres: genres.join(','),
         queueSize,
         action: 'fetch_library',
       });
@@ -79,29 +84,33 @@ function App() {
     captureCustomEvent('reshuffle_triggered', {
       username: currentUsername,
       formats: currentFormats.join(','),
+      genres: currentGenres.join(','),
       queueSize: currentQueueSize,
     });
     
-    const filtered = filterReleases(allReleases, currentFormats);
+    const filtered = filterReleases(allReleases, currentFormats, currentGenres);
     const randomized = getRandomAlbums(filtered, currentQueueSize);
     setFilteredResults(randomized);
   };
 
-  const handleFilterUpdate = (newFormats: Format[], newQueueSize: QueueSize) => {
+  const handleFilterUpdate = (newFormats: Format[], newGenres: Genre[], newQueueSize: QueueSize) => {
     // Track filter update action
     captureCustomEvent('filters_updated', {
       username: currentUsername,
       oldFormats: currentFormats.join(','),
       newFormats: newFormats.join(','),
+      oldGenres: currentGenres.join(','),
+      newGenres: newGenres.join(','),
       oldQueueSize: currentQueueSize,
       newQueueSize,
     });
     
     setCurrentFormats(newFormats);
+    setCurrentGenres(newGenres);
     setCurrentQueueSize(newQueueSize);
     
     // Apply new filters to existing data and reshuffle
-    const filtered = filterReleases(allReleases, newFormats);
+    const filtered = filterReleases(allReleases, newFormats, newGenres);
     const randomized = getRandomAlbums(filtered, newQueueSize);
     setFilteredResults(randomized);
   };
@@ -116,7 +125,7 @@ function App() {
 
   const handleRetry = () => {
     if (currentUsername) {
-      handleFetchLibrary(currentUsername, currentFormats, currentQueueSize);
+      handleFetchLibrary(currentUsername, currentFormats, currentGenres, currentQueueSize);
     } else {
       setView('home');
     }
@@ -173,6 +182,7 @@ function App() {
             queueSize={currentQueueSize}
             username={currentUsername}
             currentFormats={currentFormats}
+            currentGenres={currentGenres}
             onBack={handleBack}
             onReshuffle={handleReshuffle}
             onFilterUpdate={handleFilterUpdate}
