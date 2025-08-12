@@ -8,24 +8,21 @@ interface ErrorMessageProps {
 
 export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[300px] space-y-4">
-      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-        <AlertCircle className="w-8 h-8 text-red-500" />
+    <div className="text-center max-w-md mx-auto">
+      <div className="mb-6">
+        <div className="w-16 h-16 bg-vintage-red bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <AlertCircle className="w-8 h-8 text-vintage-red" />
+        </div>
+        <h2 className="text-2xl font-bold text-vintage-cream mb-2">Oops! Something went wrong</h2>
+        <p className="text-vintage-warm">{message}</p>
       </div>
       
-      <div className="text-center space-y-2">
-        <h3 className="text-lg font-semibold text-gray-900">Oops! Something went wrong</h3>
-        <p className="text-gray-600 max-w-md">{message}</p>
-      </div>
-      
-      {onRetry && (
-        <button
-          onClick={onRetry}
-          className="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors duration-200"
-        >
-          Try Again
-        </button>
-      )}
+      <button
+        onClick={onRetry}
+        className="vintage-button text-vintage-dark px-6 py-3 rounded-lg font-medium transition-all duration-200"
+      >
+        Try Again
+      </button>
     </div>
   );
 }
