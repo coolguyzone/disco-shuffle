@@ -35,12 +35,18 @@ Visit the live app: [Disco Shuffle on GitHub Pages](https://[your-username].gith
    npm install
    ```
 
-3. **Start development server**
+3. **Configure Sentry (optional)**
+   ```bash
+   cp env.example .env.local
+   # Edit .env.local and add your Sentry DSN
+   ```
+
+4. **Start development server**
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:5173`
 
 ### Available Scripts
@@ -96,8 +102,44 @@ Make sure your repository has:
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
 - **Deployment**: GitHub Pages + GitHub Actions
+- **Monitoring**: Sentry (@sentry/react, @sentry/tracing)
 
-## 📱 Browser Support
+## 📊 Sentry Monitoring
+
+This app includes comprehensive error monitoring and performance tracking:
+
+### **Error Monitoring**
+- Automatic error capture and reporting
+- User context tracking (Discogs username)
+- Custom error boundaries with fallback UI
+- Network error filtering and handling
+
+### **Performance Monitoring**
+- Page load performance tracking
+- API call performance monitoring
+- User interaction timing
+- Custom performance metrics
+
+### **Session Replays**
+- 10% of normal sessions recorded
+- 100% of error sessions recorded
+- User journey tracking
+- Error reproduction context
+
+### **Custom Events**
+- Library fetch attempts and successes
+- Filter updates and reshuffles
+- User format preferences
+- Queue size selections
+
+### **Setup**
+1. Create a Sentry account at [sentry.io](https://sentry.io)
+2. Create a new project for Disco Shuffle
+3. Copy your DSN from project settings
+4. Add to `.env.local`: `VITE_SENTRY_DSN=your-dsn-here`
+5. Deploy and monitor your app's health!
+
+## �� Browser Support
 
 - Chrome (latest)
 - Firefox (latest)
