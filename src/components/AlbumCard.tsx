@@ -23,7 +23,7 @@ export function AlbumCard({ release, className = '' }: AlbumCardProps) {
       href={discogsUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden block ${className}`}
+      className={`group vintage-card rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden block hover:scale-105 ${className}`}
     >
       <div className="aspect-square relative overflow-hidden">
         {!imageError && imageUrl ? (
@@ -40,35 +40,35 @@ export function AlbumCard({ release, className = '' }: AlbumCardProps) {
         ) : null}
         
         {(!imageLoaded || imageError) && (
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
-            <Music className="w-12 h-12 text-gray-400" />
+          <div className="absolute inset-0 bg-gradient-to-br from-vintage-dark to-vintage-wood flex items-center justify-center">
+            <Music className="w-12 h-12 text-vintage-brass" />
           </div>
         )}
         
-        <div className="absolute top-2 right-2 bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-gray-700">
+        <div className="absolute top-2 right-2 bg-vintage-dark bg-opacity-90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-vintage-cream border border-vintage-brass">
           {release.primaryFormat}
         </div>
         
         {release.primaryGenre && (
-          <div className="absolute top-2 left-2 bg-purple-500 bg-opacity-90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-white">
+          <div className="absolute top-2 left-2 bg-vintage-gold bg-opacity-90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-vintage-dark border border-vintage-brass">
             {release.primaryGenre}
           </div>
         )}
         
-        <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <ExternalLink className="w-4 h-4 text-white" />
+        <div className="absolute bottom-2 right-2 bg-vintage-dark bg-opacity-50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-vintage-brass">
+          <ExternalLink className="w-4 h-4 text-vintage-cream" />
         </div>
       </div>
       
       <div className="p-4 space-y-2">
-        <h3 className="font-bold text-lg text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors duration-200">
+        <h3 className="font-bold text-lg text-vintage-cream line-clamp-2 group-hover:text-vintage-gold transition-colors duration-200">
           {title}
         </h3>
-        <p className="text-gray-600 font-medium line-clamp-1">
+        <p className="text-vintage-warm font-medium line-clamp-1">
           {artist}
         </p>
         {year && (
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-vintage-warm">
             <Calendar className="w-4 h-4 mr-1" />
             {year}
           </div>

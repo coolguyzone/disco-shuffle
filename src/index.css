@@ -1,3 +1,238 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background: linear-gradient(135deg, #0f0808 0%, #1a0f0f 50%, #8B4513 100%);
+  color: #F5F5DC;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Custom scrollbar for vintage feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a0f0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CD853F;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #DAA520;
+}
+
+/* Vintage button styles */
+.vintage-button {
+  background: linear-gradient(145deg, #CD853F, #DAA520);
+  border: 2px solid #8B4513;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.vintage-button:hover {
+  background: linear-gradient(145deg, #DAA520, #CD853F);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Vintage input styles */
+.vintage-input {
+  background: #1a0f0f;
+  border: 2px solid #CD853F;
+  color: #F5F5DC;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.vintage-input:focus {
+  border-color: #DAA520;
+  box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Vintage card styles */
+.vintage-card {
+  background: linear-gradient(145deg, #1a0f0f, #8B4513);
+  border: 2px solid #CD853F;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Vintage filter panel */
+.vintage-filter-panel {
+  background: linear-gradient(145deg, #1a0f0f, #8B4513);
+  border: 2px solid #CD853F;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Vintage checkbox and radio styles */
+.vintage-checkbox {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #CD853F;
+  border-radius: 4px;
+  background-color: #1a0f0f;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.vintage-checkbox:checked {
+  background-color: #DAA520 !important;
+  border-color: #CD853F !important;
+}
+
+.vintage-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #1a0f0f;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.vintage-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.3);
+}
+
+.vintage-checkbox:hover {
+  border-color: #DAA520;
+  transform: scale(1.05);
+}
+
+.vintage-checkbox:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Force radio button selection styles with !important */
+.radio-selected {
+  background-color: #DAA520 !important;
+  border-color: #CD853F !important;
+  box-shadow: 0 0 0 2px #1a0f0f, 0 0 0 5px #DAA520 !important;
+}
+
+.radio-unselected {
+  background-color: #1a0f0f !important;
+  border-color: #CD853F !important;
+  box-shadow: none !important;
+}
+
+.radio-base {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  border: 3px solid #CD853F !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.2s ease !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  background-image: none !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  color: transparent !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  background-color: #1a0f0f !important;
+}
+
+/* Additional specificity for selected state */
+input[type="radio"].radio-base.radio-selected {
+  background-color: #DAA520 !important;
+  border-color: #CD853F !important;
+  box-shadow: 0 0 0 2px #1a0f0f, 0 0 0 5px #DAA520 !important;
+}
+
+input[type="radio"].radio-base.radio-unselected {
+  background-color: #1a0f0f !important;
+  border-color: #CD853F !important;
+  box-shadow: none !important;
+}
+
+/* Alternative approach with different naming */
+.disco-radio-base {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  width: 20px !important;
+  height: 20px !important;
+  border: 3px solid #CD853F !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.2s ease !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  background-image: none !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  color: transparent !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  background-color: #1a0f0f !important;
+}
+
+.disco-radio-selected {
+  background-color: #DAA520 !important;
+  border-color: #CD853F !important;
+  box-shadow: 0 0 0 2px #1a0f0f, 0 0 0 5px #DAA520 !important;
+}
+
+.disco-radio-unselected {
+  background-color: #1a0f0f !important;
+  border-color: #CD853F !important;
+  box-shadow: none !important;
+}
+
+/* Remove all old radio button styles */
+.vintage-radio,
+.vintage-radio:checked,
+.vintage-radio:checked::after,
+.vintage-radio:focus,
+.vintage-radio:hover,
+.vintage-radio:disabled {
+  all: unset !important;
+}
+
+/* Vintage text gradients */
+.vintage-text-gradient {
+  background: linear-gradient(135deg, #DAA520, #FF8C00, #DC143C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Vintage glow effects */
+.vintage-glow {
+  box-shadow: 0 0 20px rgba(218, 165, 32, 0.3);
+}
+
+/* Vintage border effects */
+.vintage-border {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #CD853F, #DAA520, #CD853F) 1;
+}

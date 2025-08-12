@@ -14,6 +14,11 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
   const [queueSize, setQueueSize] = useState<QueueSize>(1);
   const [showFilters, setShowFilters] = useState(false);
 
+  // Debug effect to monitor state changes
+  React.useEffect(() => {
+    console.log('HomePage - queueSize changed to:', queueSize);
+  }, [queueSize]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim()) {
@@ -46,30 +51,30 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0808] via-[#1a0f0f] to-[#8B4513]">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
             <div className="relative">
-              <Disc3 className="w-16 h-16 text-purple-500 animate-spin" style={{ animationDuration: '3s' }} />
+              <Disc3 className="w-16 h-16 text-[#1a0f0f] opacity-80" />
               <div className="absolute inset-0 w-16 h-16">
-                <Disc3 className="w-16 h-16 text-blue-500 opacity-50 animate-spin" style={{ animationDuration: '4s', animationDirection: 'reverse' }} />
+                <Disc3 className="w-16 h-16 text-[#DAA520] animate-spin vintage-glow" style={{ animationDuration: '3s' }} />
               </div>
             </div>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold vintage-text-gradient mb-4">
             Disco Shuffle
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-[#F5F5DC] max-w-2xl mx-auto">
             Discover hidden gems in your Discogs collection with our smart random album picker
           </p>
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
+          <div className="vintage-card rounded-2xl shadow-2xl p-8 space-y-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="username" className="block text-sm font-medium text-[#F5F5DC] mb-2">
                   Discogs Username
                 </label>
                 <input
@@ -78,7 +83,7 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your Discogs username"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                  className="vintage-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-[#DAA520] focus:border-transparent transition-all duration-200"
                   disabled={loading}
                   required
                 />
@@ -86,13 +91,13 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-[#F5F5DC]">
                     Filters
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center text-sm text-purple-600 hover:text-purple-700 transition-colors"
+                    className="flex items-center text-sm text-[#DAA520] hover:text-[#CD853F] transition-colors"
                     disabled={loading}
                   >
                     <Filter className="w-4 h-4 mr-1" />
@@ -103,21 +108,22 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
                 </div>
                 
                 {showFilters && (
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                  <div className="vintage-filter-panel rounded-lg p-4 space-y-4">
                     {/* Format Filters */}
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Format</h4>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <h4 className="text-sm font-medium text-[#F5F5DC] mb-3">Format</h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {FORMATS.map(format => (
                           <label key={format} className="flex items-center">
                             <input
                               type="checkbox"
                               checked={selectedFormats.includes(format)}
                               onChange={() => toggleFormat(format)}
-                              className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
+                              className="vintage-checkbox"
+                              style={{ marginRight: '10px' }}
                               disabled={loading}
                             />
-                            <span className="text-sm text-gray-700">{format}</span>
+                            <span className="text-sm text-[#F5F5DC]">{format}</span>
                           </label>
                         ))}
                       </div>
@@ -125,7 +131,7 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
                         <button
                           type="button"
                           onClick={() => setSelectedFormats([])}
-                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                          className="text-sm text-[#DEB887] hover:text-[#DAA520] transition-colors mt-3"
                           disabled={loading}
                         >
                           Clear formats
@@ -135,18 +141,19 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
 
                     {/* Genre Filters */}
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Genre</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 max-h-48 overflow-y-auto">
+                      <h4 className="text-sm font-medium text-[#F5F5DC] mb-3">Genre</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-48 overflow-y-auto">
                         {GENRES.map(genre => (
                           <label key={genre} className="flex items-center min-w-0">
                             <input
                               type="checkbox"
                               checked={selectedGenres.includes(genre)}
                               onChange={() => toggleGenre(genre)}
-                              className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 mr-2 flex-shrink-0"
+                              className="vintage-checkbox flex-shrink-0"
+                              style={{ marginRight: '10px' }}
                               disabled={loading}
                             />
-                            <span className="text-sm text-gray-700 truncate">{genre}</span>
+                            <span className="text-sm text-[#F5F5DC] truncate">{genre}</span>
                           </label>
                         ))}
                       </div>
@@ -154,7 +161,7 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
                         <button
                           type="button"
                           onClick={() => setSelectedGenres([])}
-                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                          className="text-sm text-[#DEB887] hover:text-[#DAA520] transition-colors mt-3"
                           disabled={loading}
                         >
                           Clear genres
@@ -164,20 +171,77 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
 
                     {/* Queue Size Selection */}
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Number of Results</h4>
+                      <h4 className="text-sm font-medium text-[#F5F5DC] mb-2">Number of Results</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                         {queueOptions.map(option => (
                           <label key={option.value} className="flex items-center">
-                            <input
-                              type="radio"
-                              name="queueSize"
-                              value={option.value}
-                              checked={queueSize === option.value}
-                              onChange={(e) => setQueueSize(e.target.value as QueueSize)}
-                              className="border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
-                              disabled={loading}
-                            />
-                            <span className="text-sm text-gray-700">{option.label}</span>
+                            <div className="relative mr-2">
+                              <input
+                                type="radio"
+                                name="queueSize"
+                                value={option.value}
+                                checked={queueSize === option.value}
+                                onChange={(e) => {
+                                  const newValue = e.target.value;
+                                  console.log('HomePage - Before setQueueSize:', queueSize, 'New value:', newValue, 'Type:', typeof newValue);
+                                  console.log('HomePage - Current queueSize:', queueSize, 'Option value:', option.value, 'Comparison:', queueSize === option.value);
+                                  
+                                  // Convert string to proper type
+                                  let convertedValue: QueueSize;
+                                  if (newValue === 'all') {
+                                    convertedValue = 'all';
+                                  } else {
+                                    convertedValue = parseInt(newValue) as QueueSize;
+                                  }
+                                  
+                                  console.log('HomePage - Converted value:', convertedValue, 'Type:', typeof convertedValue);
+                                  setQueueSize(convertedValue);
+                                }}
+                                className="radio-base disco-radio-base mr-2"
+                                style={{
+                                  backgroundColor: queueSize === option.value ? '#DAA520' : '#1a0f0f',
+                                  borderColor: '#CD853F',
+                                  boxShadow: queueSize === option.value ? '0 0 0 2px #1a0f0f, 0 0 0 5px #DAA520' : 'none'
+                                }}
+                                disabled={loading}
+                                onMouseEnter={(e) => {
+                                  if (!loading) {
+                                    e.currentTarget.style.borderColor = '#DAA520';
+                                    e.currentTarget.style.transform = 'scale(1.05)';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!loading) {
+                                    e.currentTarget.style.borderColor = '#CD853F';
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                  }
+                                }}
+                                onFocus={(e) => {
+                                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(218, 165, 32, 0.3)';
+                                }}
+                                onBlur={(e) => {
+                                  if (queueSize !== option.value) {
+                                    e.currentTarget.style.boxShadow = 'none';
+                                  }
+                                }}
+                              />
+                              {queueSize === option.value && (
+                                <div
+                                  style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: '8px',
+                                    height: '8px',
+                                    backgroundColor: '#1a0f0f',
+                                    borderRadius: '50%',
+                                    zIndex: 1
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <span className="text-sm text-[#F5F5DC]">{option.label}</span>
                           </label>
                         ))}
                       </div>
@@ -185,14 +249,14 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
 
                     {/* Clear All Button */}
                     {(selectedFormats.length > 0 || selectedGenres.length > 0) && (
-                      <div className="pt-2 border-t border-gray-200">
+                      <div className="pt-2 border-t border-[#CD853F]">
                         <button
                           type="button"
                           onClick={() => {
                             setSelectedFormats([]);
                             setSelectedGenres([]);
                           }}
-                          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                          className="text-sm text-[#DEB887] hover:text-[#DAA520] transition-colors"
                           disabled={loading}
                         >
                           Clear all filters
@@ -206,7 +270,7 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
               <button
                 type="submit"
                 disabled={loading || !username.trim()}
-                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-purple-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+                className="vintage-button w-full text-[#1a0f0f] py-4 px-6 rounded-lg font-semibold text-lg hover:from-[#DAA520] hover:to-[#CD853F] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
               >
                 <Shuffle className="w-5 h-5" />
                 <span>{loading ? 'Fetching Library...' : 'Fetch & Shuffle'}</span>
@@ -214,7 +278,7 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
             </form>
           </div>
 
-          <div className="text-center mt-8 text-sm text-gray-500">
+          <div className="text-center mt-8 text-sm text-[#DEB887]">
             <p>
               Make sure your Discogs collection is set to public visibility for this to work.
             </p>

@@ -28,6 +28,11 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
     setSelectedGenres(currentGenres);
   }, [queueSize, currentFormats, currentGenres]);
 
+  // Debug effect to monitor state changes
+  useEffect(() => {
+    console.log('ResultsPage - selectedQueueSize changed to:', selectedQueueSize);
+  }, [selectedQueueSize]);
+
   const toggleFormat = (format: Format) => {
     setSelectedFormats(prev => 
       prev.includes(format) 
@@ -58,12 +63,12 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0808] via-[#1a0f0f] to-[#8B4513]">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <button
             onClick={onBack}
-            className="flex items-center text-purple-600 hover:text-purple-700 transition-colors duration-200 mb-4"
+            className="flex items-center text-[#DAA520] hover:text-[#CD853F] transition-colors duration-200 mb-4"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
             Back to Search
@@ -71,18 +76,18 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-[#F5F5DC] mb-2">
                 {isSingleMode ? 'Your Random Pick' : `${results.length} Random Albums`}
               </h1>
-              <p className="text-gray-600">
-                From <span className="font-semibold">{username}</span>'s Discogs collection
+              <p className="text-[#DEB887]">
+                From <span className="font-semibold text-[#F5F5DC]">{username}</span>'s Discogs collection
               </p>
             </div>
             
             <div className="flex gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-lg font-medium hover:bg-gray-50 transition-all duration-200 space-x-2"
+                className="flex items-center vintage-card text-[#F5F5DC] px-4 py-3 rounded-lg font-medium hover:bg-[#8B4513] transition-all duration-200 space-x-2"
               >
                 <Filter className="w-5 h-5" />
                 <span>Update Filters</span>
@@ -90,7 +95,7 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
               
               <button
                 onClick={onReshuffle}
-                className="flex items-center bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:from-purple-600 hover:to-blue-600 transition-all duration-200 space-x-2"
+                className="flex items-center vintage-button text-[#1a0f0f] px-6 py-3 rounded-lg font-medium transition-all duration-200 space-x-2"
               >
                 <RotateCcw className="w-5 h-5" />
                 <span>Reshuffle</span>
@@ -101,25 +106,26 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
 
         {/* Filter Controls */}
         {showFilters && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Filters</h3>
+          <div className="vintage-card rounded-lg shadow-2xl p-6 mb-8">
+            <h3 className="text-lg font-semibold text-[#F5F5DC] mb-4">Update Filters</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Format Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-[#F5F5DC] mb-3">
                   Format Filter
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {FORMATS.map(format => (
                     <label key={format} className="flex items-center">
                       <input
                         type="checkbox"
                         checked={selectedFormats.includes(format)}
                         onChange={() => toggleFormat(format)}
-                        className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
+                        className="vintage-checkbox"
+                        style={{ marginRight: '10px' }}
                       />
-                      <span className="text-sm text-gray-700">{format}</span>
+                      <span className="text-sm text-[#F5F5DC]">{format}</span>
                     </label>
                   ))}
                 </div>
@@ -127,7 +133,7 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
                   <button
                     type="button"
                     onClick={() => setSelectedFormats([])}
-                    className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                    className="text-sm text-[#DEB887] hover:text-[#DAA520] transition-colors mt-3"
                   >
                     Clear all formats
                   </button>
@@ -136,19 +142,20 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
 
               {/* Genre Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-[#F5F5DC] mb-3">
                   Genre Filter
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-48 overflow-y-auto">
                   {GENRES.map(genre => (
                     <label key={genre} className="flex items-center min-w-0">
                       <input
                         type="checkbox"
                         checked={selectedGenres.includes(genre)}
                         onChange={() => toggleGenre(genre)}
-                        className="rounded border-gray-300 text-purple-600 focus:ring-purple-500 mr-2 flex-shrink-0"
+                        className="vintage-checkbox flex-shrink-0"
+                        style={{ marginRight: '10px' }}
                       />
-                      <span className="text-sm text-gray-700 truncate">{genre}</span>
+                      <span className="text-sm text-[#F5F5DC] truncate">{genre}</span>
                     </label>
                   ))}
                 </div>
@@ -156,7 +163,7 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
                   <button
                     type="button"
                     onClick={() => setSelectedGenres([])}
-                    className="text-sm text-gray-500 hover:text-gray-700 transition-colors mt-2"
+                    className="text-sm text-[#DEB887] hover:text-[#DAA520] transition-colors mt-3"
                   >
                     Clear all genres
                   </button>
@@ -166,36 +173,77 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
 
             {/* Queue Size Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Number of Results
+              <label className="block text-sm font-medium text-[#F5F5DC] mb-3">
+                Number of Albums
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {queueOptions.map(option => (
                   <label key={option.value} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="queueSize"
-                      value={option.value}
-                      checked={selectedQueueSize === option.value}
-                      onChange={() => setSelectedQueueSize(option.value)}
-                      className="border-gray-300 text-purple-600 focus:ring-purple-500 mr-2"
-                    />
-                    <span className="text-sm text-gray-700">{option.label}</span>
+                    <div className="relative mr-2">
+                        <input
+                          type="radio"
+                          name="queueSize"
+                          value={option.value}
+                          checked={selectedQueueSize === option.value}
+                          onChange={() => {
+                            console.log('ResultsPage - Before setSelectedQueueSize:', selectedQueueSize, 'New value:', option.value, 'Type:', typeof option.value);
+                            setSelectedQueueSize(option.value);
+                          }}
+                          className="radio-base disco-radio-base mr-2"
+                          style={{
+                            backgroundColor: selectedQueueSize === option.value ? '#DAA520' : '#1a0f0f',
+                            borderColor: '#CD853F',
+                            boxShadow: selectedQueueSize === option.value ? '0 0 0 2px #1a0f0f, 0 0 0 5px #DAA520' : 'none'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = '#DAA520';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = '#CD853F';
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(218, 165, 32, 0.3)';
+                          }}
+                          onBlur={(e) => {
+                            if (selectedQueueSize !== option.value) {
+                              e.currentTarget.style.boxShadow = 'none';
+                            }
+                          }}
+                        />
+                      {selectedQueueSize === option.value && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: '8px',
+                            height: '8px',
+                            backgroundColor: '#1a0f0f',
+                            borderRadius: '50%',
+                            zIndex: 1
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span className="text-sm text-[#F5F5DC]">{option.label}</span>
                   </label>
                 ))}
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[#CD853F]">
               <button
                 onClick={() => setShowFilters(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-[#F5F5DC] vintage-card hover:bg-[#8B4513] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleApplyFilters}
-                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-medium hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+                className="vintage-button px-6 py-2 text-[#1a0f0f] font-medium transition-all duration-200"
               >
                 Apply Filters
               </button>
@@ -223,9 +271,9 @@ export function ResultsPage({ results, queueSize, username, currentFormats, curr
 
         {results.length === 0 && (
           <div className="text-center py-16">
-            <Shuffle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No albums found</h3>
-            <p className="text-gray-500">Try adjusting your format filters or check the username.</p>
+            <Shuffle className="w-16 h-16 text-[#CD853F] mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-[#DEB887] mb-2">No albums found</h3>
+            <p className="text-[#DEB887]">Try adjusting your format filters or check the username.</p>
           </div>
         )}
       </div>
