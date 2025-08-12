@@ -6,6 +6,7 @@ import { ErrorMessage } from './components/ErrorMessage';
 import { discogsApi } from './services/discogsApi';
 import { filterReleases, getRandomAlbums } from './utils/shuffle';
 import { DiscogsRelease, FilteredRelease, Format, QueueSize } from './types/discogs';
+import { Sentry, setUserContext, captureCustomEvent, captureDiscogsError } from './sentry';
 
 type ViewState = 'home' | 'loading' | 'results' | 'error';
 
@@ -27,6 +28,14 @@ function App() {
     setCurrentQueueSize(queueSize);
     setFetchProgress({ current: 0, total: 0 });
 
+    // Track user action in Sentry
+    setUserContext(username);
+    captureCustomEvent('library_fetch_started', {
+      username,
+      formats: formats.join(','),
+      queueSize,
+    });
+
     try {
       const releases = await discogsApi.getUserCollection(
         username, 
@@ -35,6 +44,14 @@ function App() {
       
       setAllReleases(releases);
       
+      // Track successful fetch
+      captureCustomEvent('library_fetch_success', {
+        username,
+        totalReleases: releases.length,
+        formats: formats.join(','),
+        queueSize,
+      });
+      
       // Apply filters and randomization
       const filtered = filterReleases(releases, formats);
       const randomized = getRandomAlbums(filtered, queueSize);
@@ -42,18 +59,44 @@ function App() {
       setFilteredResults(randomized);
       setView('results');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      const error = err instanceof Error ? err : new Error('Unknown error occurred');
+      
+      // Track error in Sentry
+      captureDiscogsError(error, {
+        username,
+        formats: formats.join(','),
+        queueSize,
+        action: 'fetch_library',
+      });
+      
+      setError(error.message);
       setView('error');
     }
   };
 
   const handleReshuffle = () => {
+    // Track reshuffle action
+    captureCustomEvent('reshuffle_triggered', {
+      username: currentUsername,
+      formats: currentFormats.join(','),
+      queueSize: currentQueueSize,
+    });
+    
     const filtered = filterReleases(allReleases, currentFormats);
     const randomized = getRandomAlbums(filtered, currentQueueSize);
     setFilteredResults(randomized);
   };
 
   const handleFilterUpdate = (newFormats: Format[], newQueueSize: QueueSize) => {
+    // Track filter update action
+    captureCustomEvent('filters_updated', {
+      username: currentUsername,
+      oldFormats: currentFormats.join(','),
+      newFormats: newFormats.join(','),
+      oldQueueSize: currentQueueSize,
+      newQueueSize,
+    });
+    
     setCurrentFormats(newFormats);
     setCurrentQueueSize(newQueueSize);
     
@@ -80,44 +123,72 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen">
-      {view === 'home' && (
-        <HomePage
-          onFetchLibrary={handleFetchLibrary}
-          loading={false}
-        />
-      )}
-      
-      {view === 'loading' && (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-          <LoadingSpinner
-            message="Fetching your Discogs library..."
-            progress={fetchProgress.total > 0 ? fetchProgress : undefined}
-          />
+    <Sentry.ErrorBoundary
+      fallback={({ error, componentStack, resetError }) => (
+        <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl p-8 max-w-md text-center">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h1>
+            <p className="text-gray-600 mb-6">
+              An unexpected error occurred. Our team has been notified.
+            </p>
+            <button
+              onClick={resetError}
+              className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:from-purple-600 hover:to-blue-600 transition-all duration-200"
+            >
+              Try Again
+            </button>
+            {import.meta.env.DEV && (
+              <details className="mt-4 text-left">
+                <summary className="cursor-pointer text-sm text-gray-500">Error Details (Dev)</summary>
+                <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto">
+                  {error instanceof Error ? error.message : String(error)}
+                  {componentStack}
+                </pre>
+              </details>
+            )}
+          </div>
         </div>
       )}
-      
-      {view === 'results' && (
-        <ResultsPage
-          results={filteredResults}
-          queueSize={currentQueueSize}
-          username={currentUsername}
-          currentFormats={currentFormats}
-          onBack={handleBack}
-          onReshuffle={handleReshuffle}
-          onFilterUpdate={handleFilterUpdate}
-        />
-      )}
-      
-      {view === 'error' && (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-          <ErrorMessage
-            message={error}
-            onRetry={handleRetry}
+    >
+      <div className="min-h-screen">
+        {view === 'home' && (
+          <HomePage
+            onFetchLibrary={handleFetchLibrary}
+            loading={false}
           />
-        </div>
-      )}
-    </div>
+        )}
+        
+        {view === 'loading' && (
+          <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+            <LoadingSpinner
+              message="Fetching your Discogs library..."
+              progress={fetchProgress.total > 0 ? fetchProgress : undefined}
+            />
+          </div>
+        )}
+        
+        {view === 'results' && (
+          <ResultsPage
+            results={filteredResults}
+            queueSize={currentQueueSize}
+            username={currentUsername}
+            currentFormats={currentFormats}
+            onBack={handleBack}
+            onReshuffle={handleReshuffle}
+            onFilterUpdate={handleFilterUpdate}
+          />
+        )}
+        
+        {view === 'error' && (
+          <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+            <ErrorMessage
+              message={error}
+              onRetry={handleRetry}
+            />
+          </div>
+        )}
+      </div>
+    </Sentry.ErrorBoundary>
   );
 }
 
