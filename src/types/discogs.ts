@@ -32,6 +32,7 @@ export interface DiscogsCollection {
 
 export interface FilteredRelease extends DiscogsRelease {
   primaryFormat: string;
+  primaryGenre?: string;
 }
 
 export type QueueSize = 1 | 10 | 25 | 50 | 'all';
@@ -44,3 +45,25 @@ export const FORMATS = [
 ] as const;
 
 export type Format = typeof FORMATS[number];
+
+// Music genres for filtering - based on official Discogs database guidelines
+// These are the exact genre categories used by Discogs
+export const GENRES = [
+  'Blues',
+  'Brass & Military',
+  'Children\'s',
+  'Classical',
+  'Electronic',
+  'Folk, World, & Country',
+  'Funk / Soul',
+  'Hip-Hop',
+  'Jazz',
+  'Latin',
+  'Non-Music',
+  'Pop',
+  'Reggae',
+  'Rock',
+  'Stage & Screen'
+] as const;
+
+export type Genre = typeof GENRES[number];

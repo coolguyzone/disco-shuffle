@@ -49,6 +49,12 @@ export function AlbumCard({ release, className = '' }: AlbumCardProps) {
           {release.primaryFormat}
         </div>
         
+        {release.primaryGenre && (
+          <div className="absolute top-2 left-2 bg-purple-500 bg-opacity-90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-medium text-white">
+            {release.primaryGenre}
+          </div>
+        )}
+        
         <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <ExternalLink className="w-4 h-4 text-white" />
         </div>
