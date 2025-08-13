@@ -6,7 +6,7 @@ export function initSentry() {
   // Only initialize in production
   if (import.meta.env.PROD) {
     Sentry.init({
-      dsn: import.meta.env.VITE_SENTRY_DSN || 'YOUR_SENTRY_DSN_HERE',
+      dsn: import.meta.env.VITE_SENTRY_DSN || undefined,
       
       // Performance monitoring
       integrations: [
