@@ -5,6 +5,8 @@ interface LoadingSpinnerProps {
   progress?: {
     current: number;
     total: number;
+    message: string;
+    estimatedTime?: string;
   };
 }
 
@@ -19,17 +21,32 @@ export function LoadingSpinner({ message = 'Loading...', progress }: LoadingSpin
       <h2 className="text-2xl font-bold text-vintage-cream mb-4">{message}</h2>
       
       {progress && (
-        <div className="max-w-md mx-auto">
-          <div className="flex justify-between text-sm text-vintage-warm mb-2">
-            <span>Progress</span>
-            <span>{progress.current} / {progress.total}</span>
+        <div className="max-w-md mx-auto space-y-4">
+          {/* Progress Message */}
+          <div className="text-vintage-warm text-lg">
+            {progress.message}
           </div>
-          <div className="w-full bg-vintage-dark rounded-full h-2 border border-vintage-brass">
-            <div 
-              className="bg-gradient-to-r from-vintage-brass to-vintage-gold h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(progress.current / progress.total) * 100}%` }}
-            ></div>
+          
+          {/* Progress Bar */}
+          <div>
+            <div className="flex justify-between text-sm text-vintage-warm mb-2">
+              <span>Progress</span>
+              <span>{progress.current} / {progress.total}</span>
+            </div>
+            <div className="w-full bg-vintage-dark rounded-full h-2 border border-vintage-brass">
+              <div 
+                className="bg-gradient-to-r from-vintage-brass to-vintage-gold h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(progress.current / progress.total) * 100}%` }}
+              ></div>
+            </div>
           </div>
+          
+          {/* Estimated Time */}
+          {progress.estimatedTime && (
+            <div className="text-vintage-warm text-sm">
+              ⏱️ Estimated time: {progress.estimatedTime}
+            </div>
+          )}
         </div>
       )}
     </div>

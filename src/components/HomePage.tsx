@@ -282,6 +282,9 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
             <p>
               Make sure your Discogs collection is set to public visibility for this to work.
             </p>
+            <p className="mt-2 text-xs text-[#CD853F]">
+              💡 Large collections may take several minutes to fetch due to API rate limits. We'll show you progress and estimated time.
+            </p>
           </div>
         </div>
       </div>

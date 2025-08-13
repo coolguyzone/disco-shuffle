@@ -19,7 +19,7 @@ function App() {
   const [currentGenres, setCurrentGenres] = useState<Genre[]>([]);
   const [currentQueueSize, setCurrentQueueSize] = useState<QueueSize>(1);
   const [error, setError] = useState('');
-  const [fetchProgress, setFetchProgress] = useState({ current: 0, total: 0 });
+  const [fetchProgress, setFetchProgress] = useState<{ current: number; total: number; message: string; estimatedTime?: string }>({ current: 0, total: 0, message: '', estimatedTime: '' });
 
   const handleFetchLibrary = async (username: string, formats: Format[], genres: Genre[], queueSize: QueueSize) => {
     setView('loading');
@@ -28,7 +28,7 @@ function App() {
     setCurrentFormats(formats);
     setCurrentGenres(genres);
     setCurrentQueueSize(queueSize);
-    setFetchProgress({ current: 0, total: 0 });
+    setFetchProgress({ current: 0, total: 0, message: '', estimatedTime: '' });
 
     // Track user action in Sentry
     setUserContext(username);
@@ -41,8 +41,8 @@ function App() {
 
     try {
       const releases = await discogsApi.getUserCollection(
-        username, 
-        (current, total) => setFetchProgress({ current, total })
+        username,
+        (progress) => setFetchProgress(progress)
       );
       
       setAllReleases(releases);
@@ -190,10 +190,11 @@ function App() {
         )}
         
         {view === 'error' && (
-          <div className="min-h-screen bg-gradient-to-br from-vintage-darker via-vintage-dark to-vintage-wood flex items-center justify-center">
+          <div className="min-h-screen bg-gradient-to-br from-[#0f0808] via-[#1a0f0f] to-[#8B4513] flex items-center justify-center">
             <ErrorMessage
               message={error}
               onRetry={handleRetry}
+              onBack={handleBack}
             />
           </div>
         )}
