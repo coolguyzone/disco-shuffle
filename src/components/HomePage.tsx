@@ -4,10 +4,11 @@ import { FORMATS, Format, QueueSize, GENRES, Genre } from '../types/discogs';
 
 interface HomePageProps {
   onFetchLibrary: (username: string, formats: Format[], genres: Genre[], queueSize: QueueSize) => void;
+  onDemoMode: (clickPosition?: { x: number; y: number }) => void;
   loading: boolean;
 }
 
-export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
+export function HomePage({ onFetchLibrary, onDemoMode, loading }: HomePageProps) {
   const [username, setUsername] = useState('');
   const [selectedFormats, setSelectedFormats] = useState<Format[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
@@ -274,6 +275,23 @@ export function HomePage({ onFetchLibrary, loading }: HomePageProps) {
               >
                 <Shuffle className="w-5 h-5" />
                 <span>{loading ? 'Fetching Library...' : 'Fetch & Shuffle'}</span>
+              </button>
+
+              <div className="flex items-center justify-center">
+                <span className="text-[#DEB887] text-sm">or</span>
+              </div>
+
+              <button
+                type="button"
+                disabled={loading}
+                onClick={(e) => {
+                  const rect = e.currentTarget?.getBoundingClientRect();
+                  onDemoMode(rect ? { x: rect.x, y: rect.y } : undefined);
+                }}
+                className="w-full text-[#DAA520] border border-[#DAA520] py-3 px-6 rounded-lg font-medium text-base hover:bg-[#DAA520] hover:text-[#1a0f0f] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center space-x-2"
+              >
+                <Shuffle className="w-4 h-4" />
+                <span>Try Demo</span>
               </button>
             </form>
           </div>
