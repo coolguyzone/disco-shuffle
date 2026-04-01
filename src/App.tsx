@@ -5,6 +5,7 @@ import { LoadingSpinner } from './components/LoadingSpinner';
 import { ErrorMessage } from './components/ErrorMessage';
 import { discogsApi } from './services/discogsApi';
 import { filterReleases, getRandomAlbums } from './utils/shuffle';
+import { DEMO_RELEASES } from './utils/demoData';
 import { DiscogsRelease, FilteredRelease, Format, QueueSize, Genre } from './types/discogs';
 import { Sentry, setUserContext, captureCustomEvent, captureDiscogsError } from './sentry';
 
@@ -131,6 +132,23 @@ function App() {
     }
   };
 
+  const handleDemoMode = (clickPosition?: { x: number; y: number }) => {
+    // Null check: clickPosition may be undefined if the handler is invoked without
+    // a pointer event (e.g. keyboard activation), so guard before accessing .y
+    const clickY = clickPosition?.y ?? 0;
+
+    captureCustomEvent('demo_mode_started', { clickY });
+
+    const demoReleases = [...DEMO_RELEASES];
+    setCurrentUsername('demo');
+    setCurrentFormats([]);
+    setCurrentGenres([]);
+    setCurrentQueueSize(1);
+    setAllReleases(demoReleases);
+    setFilteredResults(demoReleases.slice(0, 1));
+    setView('results');
+  };
+
   return (
     <Sentry.ErrorBoundary
       fallback={({ error, componentStack, resetError }) => (
@@ -163,6 +181,7 @@ function App() {
         {view === 'home' && (
           <HomePage
             onFetchLibrary={handleFetchLibrary}
+            onDemoMode={handleDemoMode}
             loading={false}
           />
         )}
